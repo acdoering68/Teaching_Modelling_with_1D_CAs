@@ -6,10 +6,66 @@ var  init_state = "hot_spot";
 
 var state = [];
 
+var save_state_history;  // for export as csv file 
 
 const heat_transfer_scaling = [[1.0,1.0],[1.0,1.5]]
 
-function heat_transfer_transition(position){
+
+class TwoStates {
+
+   // the specific parameter is a number from 0 .. 255, e.g. along Steven Wolfram's "New Kind of Science"
+   // for faster evaluation, we create a lookup table of 8 entries
+   transition_lookup = [];
+   constructor(){
+      var pof2 = 1;
+      for (let i = 0; i< 8; i++)
+      {
+         transition_lookup.push(Math.round((specificparameter/pof2) %2) ) 
+      }
+   };
+
+   transition(position){
+
+      var s = state[position];
+      var ln = 0;
+      var rn = 0; 
+      if (position <= 0) 
+         {
+            ln = 0; 
+         }
+    else 
+         {
+            ln = state[position-1];
+         }
+         if (position >= state.length-2) 
+            {
+               rn = 0; 
+            }
+         else 
+            {
+               rn = state[position+1];
+            }
+
+      return transition_lookup [4*ln+2*rn+s];
+   };
+
+   get_color(state) {
+      if (state == 0)
+         {
+            return "#000000";
+         } else
+         {
+            return "#FFFFFF";
+         }  
+      }
+
+};
+
+class heat_transfer {
+
+   constructor(){}
+
+transition(position){
 
 var s = state[position];
 var ln = s;
@@ -36,12 +92,12 @@ return Math.round(Math.min(255,Math.max(0,(ln + rn)*scaling[0] + s*scaling[1]) /
 }
 
 // to illustrate heat we use blue to red, in rgb. If the state range is changed, scaling might be needed here.
-function heat_transfer_color(state) {
+get_color(state) {
   return  "#" + ('00' + state.toString(16)).slice(-2) + "00" +  ('00' + (255-state).toString(16)).slice(-2);
 }
 
 
-function heat_transfer_initial_state() {
+initial_state() {
    
    var i=0;
    for ( i = 0; i < init_size; i++) {state.push(0);}
@@ -50,8 +106,30 @@ function heat_transfer_initial_state() {
    for (i= Math.max(0,hotspot_middle  - hostspot_width );i<Math.min(init_size-1,hotspot_middle  + hostspot_width);i++)
        {state[i] = 255; }  
 }
+}
 
-function draw_generation(gen){
+class TimesTwo {
+
+   constructor() {}
+
+   transition(position){
+      var s = state[position];
+      var ln = s;
+      var res = s; // default: state unchanged
+      ln =  (position <= 0)             ? 0:  state[position-1];
+      rn =  (position >= state.length-2)?0:rn = state[position+1];
+      
+      if (ln==2 && s ==1) { res = 2;}
+      if (s==2  && rn==1) { res = 1;}
+
+      if (s==2 && rn==0)  { res = 1;}
+      if (s==0 && ln==2)  { res = 1;}
+
+      return  res;
+   }   
+}
+
+function draw_generation(theca,gen){
    var bounding_frame = document.getElementById("frame_rectangle")
    var newdot = null;
    for (let i=0;i<init_size;i++)
@@ -61,7 +139,7 @@ function draw_generation(gen){
          newdot.setAttribute("height","1")
          newdot.setAttribute("x",i)
          newdot.setAttribute("y",gen)
-         newdot.setAttribute("style","stroke-width:0;fill:"+heat_transfer_color(state[i]));
+         newdot.setAttribute("style","stroke-width:0;fill:"+theca.color(state[i]));
          bounding_frame.appendChild(newdot)
       }
    
@@ -70,15 +148,40 @@ function draw_generation(gen){
 }
 
 function run_and_draw(){
+   const mySearchParams = new URLSearchParams();
+
+   for (const [key,value] of mySearchParams ) {
+
+      switch (key) {
+         case "cellauttype":        cellauttype       = value; break;
+         case "rounds":             rounds            = value; break;
+         case "specificparameter":  specificparameter = value; break;
+
+      }
+   }
+
 
    bounding_frame = document.getElementById("frame_rectangle")
 
    var current_round = 0;
    
+   var my_cellular_automaton = null;
+
+   switch(cellauttype) {
+      case "heat": 
+      my_cellular_automaton = new heat_transfer();
+      break;
+      case "Two states":
+         my_cellular_automaton = new TwoStates();
+         break;
+      case "Double Red": 
+      my_cellular_automaton = new TimesTwo();
+      break;
+   }
 
    // set initial state, that could be made way more flexible.
-   heat_transfer_initial_state();
-   draw_generation(0)
+   my_cellular_automaton.initial_state();
+   draw_generation(my_cellular_automaton,0);
    
    for (current_round = 0; current_round < rounds; current_round++)
        {
@@ -88,7 +191,7 @@ function run_and_draw(){
             new_state.push(heat_transfer_transition(i));
          }
          state = new_state;
-         draw_generation(current_round);
+         draw_generation(my_cellular_automaton,current_round);
 
        }
 

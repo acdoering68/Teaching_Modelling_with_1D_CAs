@@ -1,0 +1,10 @@
+// collecting some cut code pieces here
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+onclick="run_in_new_window()"
+
+<script type="text/javascript" src="cellaut_top.js" />
+
+<script src="cellaut_drawing.js" />
+
+// <rect  width="390" height="390" " x="5" y="5" style="stroke:blue;stroke-width:5;fill:grey" /> 

@@ -1,10 +1,18 @@
 console.log("Hi!")
 
-function  run_in_new_window(cellauttype,specificparameter ){
+function  run_in_new_window( ){
 
-    var w = window.open("./drawing.html");
-w.cellauttype = cellauttype;
-w.specificparameter = specificparameter;
+
+var callingparms = "?";
+
+callingparms = callingparms + "cellauttype=" + document.getElementById("CellAutTypeSelector").value;
+callingparms = callingparms + "&rounds=" + document.getElementById("NumberGenerations").value;
+callingparms = callingparms + "&specificparameter =" + document.getElementById("Extra_Parameter").value;
+
+
+
+    var w = window.open("./drawing.html" + callingparms);
+
 
 
 }
