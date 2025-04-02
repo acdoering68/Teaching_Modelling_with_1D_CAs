@@ -13,15 +13,18 @@
   
 
 
-    <select style="width: 280px" name="CellAutTypeSelector" >
+    <select style="width: 280px" id="CellAutTypeSelector" >
   <option selected="">Please Select</option>
-  <option value="1">Two states</option>
-  <option value="2">Double Red</option>
-  <option value="3">Heat</option>
+  <option value="TwoStates">Two states</option>
+  <option value="DoubleRed">Double Red</option>
+  <option value="Heat">Heat</option>
   </select>
 
+  
+  <input value="random" id="initialization" type="text">Initialization</input>
   <input value="110" id="Extra_Parameter" type="text"> Extra Parameter</input>
   <input value="200" id="NumberGenerations" type="text">Number of Generations to run</input>
+  <input value="false" id="collect" type="checkbox" value="true">Collect data to save as CSV</input> 
 
     <input type="button" value="Run" onclick="run_in_new_window()"> 
 

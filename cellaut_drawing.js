@@ -3,8 +3,10 @@ var specificparameter = 64;
 var rounds = 200;
 var init_size = 200;
 var  init_state = "hot_spot";
+var collect = false;
 
 var state = [];
+var collected_states = [];
 
 var save_state_history;  // for export as csv file 
 
@@ -136,8 +138,8 @@ class TimesTwo {
    
    get_color(state) {
         if (state <= 0) { return "#ffffff";}
-        if (state == 1) { return "#0000ff";}
-        if (state >= 2) { return "#00ff00";}
+        if (state == 1) { return "#ff0000";}
+        if (state >= 2) { return "#0000ff";}
         // when adding states change to == 2, and add new colors here
        
    }
@@ -145,7 +147,8 @@ class TimesTwo {
    initial_state() {
       // check here for init_state, TBD several pattern  
       var i=0;
-      for ( i = 0; i < init_size; i++) {state.push(Math.round(Math.random(3)));}
+      for ( i = 0; i < init_size; i++) 
+         {state.push(Math.round(3*Math.random()));}
    }
       
 }
@@ -168,6 +171,49 @@ function draw_generation(theca,gen){
 
 }
 
+
+// from luk2302 on stackoverflow 
+function exportToCsv(filename, rows) {
+   var processRow = function (row) {
+       var finalVal = '';
+       for (var j = 0; j < row.length; j++) {
+           var innerValue = row[j] === null ? '' : row[j].toString();
+           if (row[j] instanceof Date) {
+               innerValue = row[j].toLocaleString();
+           };
+           var result = innerValue.replace(/"/g, '""');
+           if (result.search(/("|,|\n)/g) >= 0)
+               result = '"' + result + '"';
+           if (j > 0)
+               finalVal += ',';
+           finalVal += result;
+       }
+       return finalVal + '\n';
+   };
+
+   var csvFile = '';
+   for (var i = 0; i < rows.length; i++) {
+       csvFile += processRow(rows[i]);
+   }
+
+   var blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
+   if (navigator.msSaveBlob) { // IE 10+
+       navigator.msSaveBlob(blob, filename);
+   } else {
+       var link = document.createElement("a");
+       if (link.download !== undefined) { // feature detection
+           // Browsers that support HTML5 download attribute
+           var url = URL.createObjectURL(blob);
+           link.setAttribute("href", url);
+           link.setAttribute("download", filename);
+           link.style.visibility = 'hidden';
+           document.body.appendChild(link);
+           link.click();
+           document.body.removeChild(link);
+       }
+   }
+}
+
 function run_and_draw(){
    const mySearchParams = new URLSearchParams(window.location.search);
 
@@ -178,6 +224,7 @@ function run_and_draw(){
          case "rounds":             rounds            = value; break;
          case "specificparameter":  specificparameter = value; break;
          case "initialization":     init_state        = value; break;
+         case "collect":            collect           = value == "true"; break; 
       }
    }
 
@@ -211,10 +258,21 @@ function run_and_draw(){
          {
             new_state.push(my_cellular_automaton.transition(i));
          }
+         if (collect)
+         {
+            collected_states.push(state);
+         }
          state = new_state;
          draw_generation(my_cellular_automaton,current_round);
 
        }
+       if (collect)
+         {
+            collected_states.push(state);
+            exportToCsv("run" + cellauttype + ".csv", collected_states)
+            
+         }
+
 
 
 }
