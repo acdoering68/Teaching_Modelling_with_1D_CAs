@@ -12,6 +12,8 @@ var save_state_history;  // for export as csv file
 
 const heat_transfer_scaling = [[1.0,1.0],[1.0,1.5]]
 
+var count_transitions = 0;
+
 
 class TwoStates {
 
@@ -115,6 +117,9 @@ initial_state() {
 }
 }
 
+
+const testdata1 = [0,0,1,2,2,2,2,0,1,0,0,0,1,1,1,1,1,1,1,1,2,2,2,2,0,0,1,1,1,1,1,1,1,1,2,2,2,2,0,0,1,0,2,0,1,0,1,0,1,2,0,0,0,1,1,0,1,1,0,1,0,0,2,0,0,1,2,0,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,0,1,1,1,0,0,1,2,0,0,2,0,1,1,0,0,1,1,1,1,1,1,2,2,0,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,0,1,1,1,0,0,1,1,1,0,1,2,0,1,0,0,0,1,0,1,1,1,1,0,1,1,1,1,2,2,2,0,1,0,1,0,1,0,0,1,0,0,1,1,2,2,0,1,1,1,1,1,0,0,0,1,1,1,1,0,2,0,0,0,0,0,1,1,1,0,2,2,0,1,1];
+   
 class TimesTwo {
 
    constructor() {}
@@ -128,10 +133,10 @@ class TimesTwo {
       rn =  (position >= state.length-2)?0:rn = state[position+1];
       
       if (ln==2 && s ==1) { res = 2;}
-      if (s==2  && rn==1) { res = 1;}
+      else if (s==2  && rn==1) { res = 1;}
 
-      if (s==2 && rn==0)  { res = 1;}
-      if (s==0 && ln==2)  { res = 1;}
+      else if (s==2 && rn==0)  { res = 1;}
+      else if (s==0 && ln==2)  { res = 1;}
 
       return  res;
    }  
@@ -145,12 +150,21 @@ class TimesTwo {
    }
 
    initial_state() {
-      // check here for init_state, TBD several pattern  
       var i=0;
-      for ( i = 0; i < init_size; i++) 
-         {state.push(Math.round(3*Math.random()));}
-   }
-      
+      switch (init_state) {
+      case "random":
+        for ( i = 0; i < init_size; i++) 
+           {state.push(Math.round(3.0*Math.random()-0.5));}
+        break;
+      case "test1":
+         state = testdata1;
+         break;
+      case "blocks":
+         for ( i = 0; i < init_size; i++) 
+            {state.push((i<init_size/4)?2:((i<init_size/2)?1:0));}
+     };
+   
+}
 }
 
 function draw_generation(theca,gen){
@@ -250,20 +264,22 @@ function run_and_draw(){
    // set initial state, that could be made way more flexible.
    my_cellular_automaton.initial_state();
    draw_generation(my_cellular_automaton,0);
-   
+   count_transitions = 0;  
    for (current_round = 0; current_round < rounds; current_round++)
        {
          let new_state = [];
          for (let i=0; i< init_size;i++)
          {
             new_state.push(my_cellular_automaton.transition(i));
+            count_transitions = count_transitions + 1;
          }
          if (collect)
          {
             collected_states.push(state);
          }
-         state = new_state;
+         state = new_state.slice();
          draw_generation(my_cellular_automaton,current_round);
+         console.log(count_transitions + " transitions calculated by round" + current_round)
 
        }
        if (collect)
