@@ -9,8 +9,8 @@ callingparms = callingparms + "cellauttype=" + document.getElementById("CellAutT
 callingparms = callingparms + "&rounds=" + document.getElementById("NumberGenerations").value;
 callingparms = callingparms + "&specificparameter=" + document.getElementById("Extra_Parameter").value;
 callingparms = callingparms + "&initialization=" + document.getElementById("initialization").value;
-callingparms = callingparms + "&collect=" + document.getElementById("collect").value;
-
+callingparms = callingparms + "&collect=" + document.getElementById("collect").checked;
+console.log("Invoking with" + callingparms)
 
     var w = window.open("./drawing.html" + callingparms);
 

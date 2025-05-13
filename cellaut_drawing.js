@@ -1,3 +1,4 @@
+ 
 var cellauttype = "TwoStates";
 var specificparameter = 64;
 var rounds = 200;
@@ -10,162 +11,14 @@ var collected_states = [];
 
 var save_state_history;  // for export as csv file 
 
-const heat_transfer_scaling = [[1.0,1.0],[1.0,1.5]]
 
 var count_transitions = 0;
 
 
-class TwoStates {
-
-   // the specific parameter is a number from 0 .. 255, e.g. along Steven Wolfram's "New Kind of Science"
-   // for faster evaluation, we create a lookup table of 8 entries
-   transition_lookup = [];
-   constructor(){
-      var pof2 = 1;
-      for (let i = 0; i< 8; i++)
-      {
-         this.transition_lookup.push(Math.round((specificparameter/pof2) %2) );
-         pof2 = pof2 *2;
-      }
-   };
-
-   transition(position){
-
-      var s = state[position];
-      var ln = 0;
-      var rn = 0; 
-      if (position <= 0) 
-         {
-            ln = 0; 
-         }
-    else 
-         {
-            ln = state[position-1];
-         }
-         if (position >= state.length-2) 
-            {
-               rn = 0; 
-            }
-         else 
-            {
-               rn = state[position+1];
-            }
-
-      return this.transition_lookup [4*ln+2*rn+s];
-   };
-
-   get_color(state) {
-      if (state == 0)
-         {
-            return "#000000";
-         } else
-         {
-            return "#FFFFFF";
-         }  
-      }
-   initial_state() {
-      var i=0;
-      for ( i = 0; i < init_size; i++) {state.push(Math.round(Math.random(2)));}
-   };
-
-};
-
-class heat_transfer {
-
-   constructor(){}
-
-transition(position){
-
-var s = state[position];
-var ln = s;
-if (position <= 0) 
-     {
-        ln = 0; 
-     }
-else 
-     {
-        ln = state[position-1];
-     }
-var rn = s;
-if (position >= state.length-2) 
-   {
-      rn = 0; 
-   }
-else 
-   {
-      rn = state[position+1];
-   }
-var scaling = heat_transfer_scaling[specificparameter%2];
-
-return Math.round(Math.min(255,Math.max(0,(ln + rn)*scaling[0] + s*scaling[1]) / (2*scaling[0] + scaling[1]))); 
-}
-
-// to illustrate heat we use blue to red, in rgb. If the state range is changed, scaling might be needed here.
-get_color(state) {
-  return  "#" + ('00' + state.toString(16)).slice(-2) + "00" +  ('00' + (255-state).toString(16)).slice(-2);
-}
 
 
-initial_state() {
-   
-   var i=0;
-   for ( i = 0; i < init_size; i++) {state.push(0);}
-   var hostspot_width = Math.round(specificparameter/2);
-   var hotspot_middle = Math.round(init_size/2)
-   for (i= Math.max(0,hotspot_middle  - hostspot_width );i<Math.min(init_size-1,hotspot_middle  + hostspot_width);i++)
-       {state[i] = 255; }  
-}
-}
 
 
-const testdata1 = [0,0,1,2,2,2,2,0,1,0,0,0,1,1,1,1,1,1,1,1,2,2,2,2,0,0,1,1,1,1,1,1,1,1,2,2,2,2,0,0,1,0,2,0,1,0,1,0,1,2,0,0,0,1,1,0,1,1,0,1,0,0,2,0,0,1,2,0,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,0,1,1,1,0,0,1,2,0,0,2,0,1,1,0,0,1,1,1,1,1,1,2,2,0,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,0,1,1,1,0,0,1,1,1,0,1,2,0,1,0,0,0,1,0,1,1,1,1,0,1,1,1,1,2,2,2,0,1,0,1,0,1,0,0,1,0,0,1,1,2,2,0,1,1,1,1,1,0,0,0,1,1,1,1,0,2,0,0,0,0,0,1,1,1,0,2,2,0,1,1];
-   
-class TimesTwo {
-
-   constructor() {}
-
-   transition(position){
-      var s = state[position];
-      var ln = s;
-      var rn = s;
-      var res = s; // default: state unchanged
-      ln =  (position <= 0)             ? 0:  state[position-1];
-      rn =  (position >= state.length-2)?0:rn = state[position+1];
-      
-      if (ln==2 && s ==1) { res = 2;}
-      else if (s==2  && rn==1) { res = 1;}
-
-      else if (s==2 && rn==0)  { res = 1;}
-      else if (s==0 && ln==2)  { res = 1;}
-
-      return  res;
-   }  
-   
-   get_color(state) {
-        if (state <= 0) { return "#ffffff";}
-        if (state == 1) { return "#ff0000";}
-        if (state >= 2) { return "#0000ff";}
-        // when adding states change to == 2, and add new colors here
-       
-   }
-
-   initial_state() {
-      var i=0;
-      switch (init_state) {
-      case "random":
-        for ( i = 0; i < init_size; i++) 
-           {state.push(Math.round(3.0*Math.random()-0.5));}
-        break;
-      case "test1":
-         state = testdata1;
-         break;
-      case "blocks":
-         for ( i = 0; i < init_size; i++) 
-            {state.push((i<init_size/4)?2:((i<init_size/2)?1:0));}
-     };
-   
-}
-}
 
 function draw_generation(theca,gen){
    var bounding_frame = document.getElementById("frame_rectangle")
@@ -227,7 +80,7 @@ function exportToCsv(filename, rows) {
        }
    }
 }
-
+ 
 function run_and_draw(){
    const mySearchParams = new URLSearchParams(window.location.search);
 

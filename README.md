@@ -16,3 +16,6 @@ Supported models:
 * (Planned) various sea shell pattern following the book "The algorithmic beauty of sea shells" by Hans Meinhardt
 * reverse pattern
 * firing squad
+
+For modularity the JS module system is not used, because it requires a web server. 
+For ease of use it was intended that the whole project can be loaded locally from the file system.
