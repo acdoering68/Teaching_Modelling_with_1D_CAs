@@ -114,8 +114,9 @@ function run_and_draw(){
       break;
    }
 
+   my_cellular_automaton.init_state = init_state; 
    // set initial state, that could be made way more flexible.
-   my_cellular_automaton.initial_state();
+   state = my_cellular_automaton.initial_state();
    draw_generation(my_cellular_automaton,0);
    count_transitions = 0;  
    for (current_round = 0; current_round < rounds; current_round++)

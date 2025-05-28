@@ -7,11 +7,13 @@ class TwoStates {
       var pof2 = 1;
       for (let i = 0; i< 8; i++)
       {
-         this.transition_lookup.push(Math.round((specificparameter/pof2) %2) );
+         this.transition_lookup.push(Math.round(specificparameter/pof2) %2);
          pof2 = pof2 *2;
       }
    };
-
+   
+   init_state = "random";
+   
    transition(position){
 
       var s = state[position];
@@ -33,8 +35,8 @@ class TwoStates {
             {
                rn = state[position+1];
             }
-
-      return this.transition_lookup [4*ln+2*rn+s];
+                // see Wikipedia Elementary Cellular Automata for common numbering scheme
+      return this.transition_lookup [4*ln+2*s+rn];
    };
 
    get_color(state) {
@@ -47,9 +49,12 @@ class TwoStates {
          }  
       }
    initial_state() {
+      var state = [];
       var i=0;
       for ( i = 0; i < init_size; i++) {state.push(Math.round(Math.random(2)));}
+      return state;
    };
+
 
 };
 
