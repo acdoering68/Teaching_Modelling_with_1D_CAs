@@ -1,3 +1,7 @@
+
+const oriented_init = [0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1];
+
+
 class TwoStates {
 
    // the specific parameter is a number from 0 .. 255, e.g. along Steven Wolfram's "New Kind of Science"
@@ -51,7 +55,13 @@ class TwoStates {
    initial_state() {
       var state = [];
       var i=0;
-      for ( i = 0; i < init_size; i++) {state.push(Math.round(Math.random(2)));}
+      switch (this.init_state) {
+            case "random":
+               for ( i = 0; i < init_size; i++) {state.push(Math.round(Math.random(2)));}
+            case "left":
+               state = oriented_init;
+                break;   
+      }
       return state;
    };
 
