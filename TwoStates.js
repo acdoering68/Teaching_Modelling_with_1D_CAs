@@ -17,6 +17,7 @@ class TwoStates {
    };
    
    init_state = "random";
+   compute_draw_ratio = 1;
    
    transition(position){
 

@@ -2,6 +2,7 @@
 var cellauttype = "TwoStates";
 var specificparameter = 64;
 var rounds = 200;
+var compute_draw_ratio = 1;
 var init_size = 200;
 var  init_state = "hot_spot";
 var collect = false;
@@ -110,28 +111,40 @@ function run_and_draw(){
          my_cellular_automaton = new TwoStates();
          break;
       case "DoubleRed": 
-      my_cellular_automaton = new TimesTwo();
+      my_cellular_automaton = new TimesTwo(); break;
+      case "TripleRed": 
+      my_cellular_automaton = new TimesThree(); break;
+      case "Sea Shell":
+      my_cellular_automaton = new SeaShells(); 
       break;
    }
 
    my_cellular_automaton.init_state = init_state; 
+   compute_draw_ratio = my_cellular_automaton.compute_draw_ratio;
+
    // set initial state, that could be made way more flexible.
    state = my_cellular_automaton.initial_state();
    draw_generation(my_cellular_automaton,0);
-   count_transitions = 0;  
+   count_transitions = 0;
+   
+   var inner_round = 0;
+   
    for (current_round = 0; current_round < rounds; current_round++)
        {
-         let new_state = [];
-         for (let i=0; i< init_size;i++)
-         {
+         for (inner_round = 0; inner_round < compute_draw_ratio; inner_round++)
+           {  
+           let new_state = [];
+           for (let i=0; i< init_size;i++)
+           {
             new_state.push(my_cellular_automaton.transition(i));
             count_transitions = count_transitions + 1;
+           }
+           state = new_state.slice();
          }
          if (collect)
          {
             collected_states.push(state);
          }
-         state = new_state.slice();
          draw_generation(my_cellular_automaton,current_round);
          console.log(count_transitions + " transitions calculated by round" + current_round)
 
