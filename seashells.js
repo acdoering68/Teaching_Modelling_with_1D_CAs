@@ -20,10 +20,14 @@ That's why only few species fith given parameters are selected
 const seashell21_constants = {
 random_a_low : 5,
 random_a_high :25,
+random_b_low : 5,
+random_b_high :25,
 dra : 0.1,
 drb : 0.1,
 da : 0.95, // decay activator
-db : 0.9 // decay inhibitor
+db : 0.9, // decay inhibitor
+ba : 0.05, // base activator production
+bb : 0.05 // base inhibitor production
 
 }
 
@@ -31,22 +35,36 @@ const seashelldefault_constants = {
 
   random_a_low : 0,
 random_a_high :255,
+random_b_low : 1,
+random_b_high :1,
 dra : 0.0,
 drb : 0.0,
 da : 1.0, // decay activator
-db : 1.0 // decay inhibitor
+db : 1.0, // decay inhibitor
+ba : 0.0, 
+bb : 0.0
+
 
 }
 
 
 class SeaShells {
 
-
+    random_a_low = 1;
+    random_a_high = 100;
+    random_b_low = 1;
+    random_b_high = 1;
     dra = 0.1;
     drb = 0.1;
     da = 1.0;
     db = 1.0;
 
+    ba = 0.0;
+    bb = 0.0;
+
+    s = 1.0; // base density factor
+
+    equation = "i21";
 
     constructor(){ 
     this.dra = 0.1;
@@ -56,9 +74,9 @@ class SeaShells {
     }
 
     init_state = "random";
-    compute_draw_ratio = 100 ;
+    compute_draw_ratio = 1 ;
 
-    equation = "21"
+    
 
     // the following members reflect the names of the original Basic source code
     
@@ -71,27 +89,30 @@ class SeaShells {
       var rn = state[position];
       var a = state[position][0];  
       var b = state[position][1];
-      var s = state[position][2]; // the code from the book has cases with more than two substances which would require more fields
-      var res = [0.0,0.0,0.0];
 
+      // var s = state[position][2]; // the code from the book has cases with more than two substances which would require more fields
+      var res = [0.0,0.0];
+
+      var olddecaydiffA;
+      var olddecaydiffB;
       // handling edges
       if (position > 0) 
       {
          ln = state[position-1];
       }
-      if (position >= state.length-2) 
+      if (position < state.length-2) 
         {
           rn = state[position+1];
         }
  
 
 
-      olddecaydiffA = this.dra * a + this.da * (al + state[position+1]);
-      olddecaydiffB = this.drb * b + this.db * (bl + a[2, i + 1]);
-      switch (equation) {
-          case "21":
-            res[0] = olddecaydiffA + s * (a * a / b + ba);
-            res[1] = olddecaydiffB + s * a * a + bb;
+      olddecaydiffA = this.dra * a + this.da * (ln[0] + rn[0]);
+      olddecaydiffB = this.drb * b + this.db * (ln[1] + rn[1]);
+      switch (this.equation) {
+          case "i21":
+            res[0] = olddecaydiffA + this.s * (a * a / b + this.ba);
+            res[1] = olddecaydiffB + this.s * a * a + this.bb;
           break;
       }  
       return res;
@@ -104,16 +125,36 @@ class SeaShells {
             case "i21":
                 initc = seashell21_constants ;
         }
+        this.random_a_low = initc.random_a_low;
+        this.random_a_high = initc.random_a_high;
+        this.random_b_low =  initc.random_b_low;
+        this.random_b_high = initc.random_b_high;
         this.dra = initc.dra;
         this.drb = initc.drb;
         this.da = initc.da;
         this.db = initc.db;
+        this.ba = initc.ba;
+        this.bb = initc.bb;
+
+         var state = [];
+         var rndn;
+         var inita;
+         var initb;
+
+    var i=0;
+    for ( i = 0; i < init_size; i++) {
+      rndn = Math.random();
+      inita = this.random_a_low + (this.random_a_high - this.random_a_low)*rndn;
+      rndn = Math.random();
+      initb = this.random_b_low + (this.random_b_high - this.random_b_low)*rndn;
+      state.push([inita,initb]);}
+    return state;
      }
 
 
 get_color(state) {
        // for a start, only transform the activator to red
-       return  "#" + ('00' + (Math.round(state[0]*100)).toString(16)).slice(-2) + "0000"
+       return  "#" + ('00' + (Math.round(state[0])).toString(16)).slice(-2) + "0000"
     }
 
 
