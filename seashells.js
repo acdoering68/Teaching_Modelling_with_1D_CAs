@@ -17,15 +17,18 @@ That's why only few species fith given parameters are selected
 
 // parameter sets for initialization and 
 
+// drb must at least 7* dra
+// db > da
+
 const seashell21_constants = {
-random_a_low : 5,
-random_a_high :25,
-random_b_low : 5,
-random_b_high :25,
-dra : 0.1,
-drb : 0.1,
-da : 0.95, // decay activator
-db : 0.9, // decay inhibitor
+random_a_low : 0.5,
+random_a_high :1.5,
+random_b_low : 0.5,
+random_b_high :1.5,
+dra : 0.02,
+drb : 0.2                                                                                                                                       ,
+da : 0.05, // decay activator
+db : 0.1, // decay inhibitor
 ba : 0.05, // base activator production
 bb : 0.05 // base inhibitor production
 
@@ -154,7 +157,7 @@ class SeaShells {
 
 get_color(state) {
        // for a start, only transform the activator to red
-       return  "#" + ('00' + (Math.round(state[0])).toString(16)).slice(-2) + "0000"
+       return  "#" + ('00' + (Math.round(state[0]*200)).toString(16)).slice(-2) + "0000"
     }
 
 
