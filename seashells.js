@@ -20,6 +20,7 @@ That's why only few species fith given parameters are selected
 // drb must at least 7* dra
 // db > da
 
+// horizontal stripes
 const seashell21_constants = {
 random_a_low : 0.5,
 random_a_high :1.5,
@@ -33,6 +34,21 @@ ba : 0.05, // base activator production
 bb : 0.05 // base inhibitor production
 
 }
+
+const seashell21_constants_vertical = {
+random_a_low : 0.5,
+random_a_high :1.5,
+random_b_low : 0.5,
+random_b_high :1.5,
+dra : 0.04,
+drb : 0.3                                                                                                                                       ,
+da : 0.07, // decay activator
+db : 0.2, // decay inhibitor
+ba : 0.05, // base activator production
+bb : 0.05 // base inhibitor production
+
+}
+
 
 const seashelldefault_constants = {
 
@@ -127,6 +143,10 @@ class SeaShells {
         switch (this.init_state) {
             case "i21":
                 initc = seashell21_constants ;
+                break;
+            case "i21v":
+                initc = seashell21_constants_vertical ;
+                break;
         }
         this.random_a_low = initc.random_a_low;
         this.random_a_high = initc.random_a_high;
@@ -157,7 +177,10 @@ class SeaShells {
 
 get_color(state) {
        // for a start, only transform the activator to red
-       return  "#" + ('00' + (Math.round(state[0]*200)).toString(16)).slice(-2) + "0000"
+       // return  "#" + ('00' + (Math.round(state[0]*200)).toString(16)).slice(-2) + "0000"
+       // at least scale between white/ivory to brown
+       var scaled_state = Math.max(0,Math.min(2.0,state[0]))
+       return  "#" + ((256 - Math.round(scaled_state*40)).toString(16)).slice(-2) + ((256 - Math.round(scaled_state*70)).toString(16)).slice(-2) + ((256 - Math.round(scaled_state*60)).toString(16)).slice(-2)
     }
 
 
