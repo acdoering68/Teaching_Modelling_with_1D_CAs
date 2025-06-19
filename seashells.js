@@ -27,7 +27,7 @@ random_a_high :1.5,
 random_b_low : 0.5,
 random_b_high :1.5,
 dra : 0.02,
-drb : 0.2                                                                                                                                       ,
+drb : 0.2,
 da : 0.05, // decay activator
 db : 0.1, // decay inhibitor
 ba : 0.05, // base activator production
@@ -37,15 +37,15 @@ bb : 0.05 // base inhibitor production
 
 const seashell21_constants_vertical = {
 random_a_low : 0.5,
-random_a_high :1.5,
-random_b_low : 0.5,
-random_b_high :1.5,
-dra : 0.04,
-drb : 0.3                                                                                                                                       ,
-da : 0.07, // decay activator
-db : 0.2, // decay inhibitor
-ba : 0.05, // base activator production
-bb : 0.05 // base inhibitor production
+random_a_high :3.5,
+random_b_low : 1.0,
+random_b_high :2.0,
+dra : 0.1,
+drb : 1.2,                                                                                                                                       
+da :  -0.01, // decay activator, the equation in the book has a minus, but the equations from basic source don't so we make the factors negative
+db : -0.5, // decay inhibitor
+ba : 0.3, // base activator production
+bb : 0.6 // base inhibitor production
 
 }
 
@@ -130,8 +130,8 @@ class SeaShells {
       olddecaydiffB = this.drb * b + this.db * (ln[1] + rn[1]);
       switch (this.equation) {
           case "i21":
-            res[0] = olddecaydiffA + this.s * (a * a / b + this.ba);
-            res[1] = olddecaydiffB + this.s * a * a + this.bb;
+            res[0] = Math.max(0,olddecaydiffA + this.s * (a * a / b + this.ba));
+            res[1] = Math.max(1.0,olddecaydiffB + this.s * a * a + this.bb); // division by b in next generation, so != 0
           break;
       }  
       return res;
