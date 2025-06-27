@@ -25,3 +25,23 @@ function run_in_new_window() {
 
   var w = window.open("./drawing.html" + callingparms);
 }
+
+function set_init_selection(){
+  selected_cellauttype = document.getElementById("CellAutTypeSelector").value;
+   init_options = ["random"]; // default, random is always supported
+   switch (selected_cellauttype) {
+      case "DoubleRed":      init_options = ["random","block"];   break;
+      case "TwoStates":      init_options = ["random","left"];    break;
+      case "Heat":           init_options = [];                   break; // initialization parameter not used
+      case "SeaShell":      init_options = ["i21","i21v","i23"]; break;
+   }
+   var input_initialization_list = document.getElementById("initvalues");
+   input_initialization_list.innerHTML = '';
+   for (initop of init_options) {
+      var opt = document.createElement('option');
+      opt.value = initop;
+      opt.innerHTML = initop;
+      input_initialization_list.appendChild(opt);   
+   }
+
+}

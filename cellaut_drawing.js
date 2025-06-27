@@ -118,7 +118,7 @@ function run_and_draw() {
     case "TripleRed":
       my_cellular_automaton = new TimesThree();
       break;
-    case "Sea Shell":
+    case "SeaShell":
       my_cellular_automaton = new SeaShells();
       break;
   }
