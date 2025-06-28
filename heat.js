@@ -1,8 +1,10 @@
 var tau = 0.4; // 0 < tau < 0.5
+var oneminustwotau = 0.2;
 
 class heat_transfer {
   constructor() {
     tau = Math.min(specificparameter, 0.5);
+    oneminustwotau = 1.0 - 2.0* tau;
   }
 
   init_state = "random";
@@ -26,16 +28,17 @@ class heat_transfer {
     var scaling = [tau, 1 - 2.0 * tau]; //  heat_transfer_scaling[specificparameter%2];
 
     // return Math.round(Math.min(255,Math.max(0,(ln + rn)*scaling[0] + s*scaling[1]) )); // / (2*scaling[0] + scaling[1]))
-    return Math.round(Math.min(255, Math.max(0, (ln + rn) * tau + s * 0.2)));
+    return Math.round(100*Math.min(255, Math.max(0, (ln + rn) * tau + s * oneminustwotau)))/100.0;
   }
 
   // to illustrate heat we use blue to red, in rgb. If the state range is changed, scaling might be needed here.
   get_color(state) {
+    var roundedstate = Math.round(state)
     return (
       "#" +
-      ("00" + state.toString(16)).slice(-2) +
+      ("00" + roundedstate.toString(16)).slice(-2) +
       "00" +
-      ("00" + (255 - state).toString(16)).slice(-2)
+      ("00" + (255 - roundedstate).toString(16)).slice(-2)
     );
   }
 
