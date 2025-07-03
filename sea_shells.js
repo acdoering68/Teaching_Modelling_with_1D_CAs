@@ -69,6 +69,9 @@ const seashell21_constants_vertical = {
   equation: "i21",
 };
 
+
+
+
 const seashell23_constants = {
   random_a_low: 0.5,
   random_a_high: 3.5,
@@ -83,6 +86,23 @@ const seashell23_constants = {
   sa: 0.2,
   equation: "i23",
 };
+
+// Modify this!
+const seashell23_constants_student = {
+  random_a_low: 0.5,
+  random_a_high: 3.5,
+  random_b_low: 1.0,
+  random_b_high: 2.0,
+  dra: 0.05,
+  drb: 0.4,
+  da: -0.01,
+  db: -0.6,
+  ba: 0.3,
+  bb: 0.6,
+  sa: 7,
+  equation: "i23",
+};
+
 
 class SeaShells {
   random_a_low = 1;
@@ -166,6 +186,9 @@ class SeaShells {
         break;
       case "i23":
         initc = seashell23_constants;
+        break;
+      case "student":
+        initc = seashell23_constants_student; 
         break;
     }
     this.random_a_low = initc.random_a_low;

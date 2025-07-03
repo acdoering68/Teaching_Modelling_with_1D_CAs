@@ -34,7 +34,7 @@ function set_init_selection(){
       case  "TripleRed":      init_options = ["random","block"];   break;
       case "TwoStates":      init_options = ["random","left"];    break;
       case "Heat":           init_options = [];                   break; // initialization parameter not used
-      case "SeaShell":      init_options = ["i21","i21v","i23"]; break;
+      case "SeaShell":      init_options = ["i21","i21v","i23","student"]; break;
    }
    var input_initialization_list = document.getElementById("initvalues");
    input_initialization_list.innerHTML = '';

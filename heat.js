@@ -50,9 +50,19 @@ class heat_transfer {
     }
     var hostspot_width = Math.round(init_size / 4);
     var hotspot_middle = Math.round(init_size / 2);
+    if (this.init_state == "random")
+      { // from a physical standpoint, random init does not make much sense
+        for (i = 0; i < init_size; i++) 
+          {state[i] = Math.round(Math.random(255));} 
+        hotspot_width = 0; // avoid overwrite
+        
+      }else if (this.init_state[0] == "h" ) {
+        var hotspot_width_as_as_string = this.init_state.substring(1);
+        hostspot_width = Number(hotspot_width_as_as_string);
+      }
     for (
       i = Math.max(0, hotspot_middle - hostspot_width);
-      i < Math.min(init_size - 1, hotspot_middle + hostspot_width);
+      i < Math.min(init_size - 1, hotspot_middle + hostspot_width-1);
       i++
     ) {
       state[i] = 255;
